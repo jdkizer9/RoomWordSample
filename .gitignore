@@ -1,3 +1,6 @@
+clear_database/*
+encrypted_database/*
+
 *.iml
 .gradle
 /local.properties

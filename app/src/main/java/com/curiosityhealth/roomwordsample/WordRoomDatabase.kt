@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.commonsware.cwac.saferoom.SafeHelperFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -15,6 +16,12 @@ public abstract class WordRoomDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao
 
     companion object {
+
+
+//        fun convertKeyDataToHexCharArray(keyData: ByteArray) : CharArray {
+//
+//        }
+
         @Volatile
         private var INSTANCE: WordRoomDatabase? = null
 
@@ -27,11 +34,16 @@ public abstract class WordRoomDatabase : RoomDatabase() {
                 return tempInstance
             }
             synchronized(this) {
+
+                val key = "x'dd5d54567e1f23005d781b23242a0770aec04361ab6f15e7eebcd11e82cbfc61'"
+                val factory = SafeHelperFactory(key.toCharArray())
+
                 val instance = Room.databaseBuilder(
                     context.applicationContext,
                     WordRoomDatabase::class.java,
                     "Word_database"
                 )
+                    .openHelperFactory(factory)
                     .addCallback(WordDatabaseCallback(scope))
                     .build()
                 INSTANCE = instance
